@@ -1,0 +1,33 @@
+# Summary
+
+Throughout this book, we scraped the surface of time series analysis.  In review, we covered:
+
+* What is a time series?
+  + A time series is a series of data points over time.
+* Components of a time series
+  + Trend, seasonality, random white noise.
+* Stationarity
+  + Defined as constant means and varaince throughout the series.
+  + Time series should be stationary when forecasting.
+  + Must fit a model to the time series to detrend and deseasonalize the series.
+* AR and MA models
+  + The autoregressive model uses observations from preivous time steps as input to a regression equations to predict the value at the next step. 
+  + The moving average model is a time series model that accounts for very short-run autocorrelation.
+  + You should use the ACF and PACF plots to determine the order of these.
+  + These models only work on stationary data.
+* ARMA, ARIMA, and SARIMA Models
+  + ARMA models are a combination of AR and MA models and only works on stationary data.
+  + ARIMA models are the same as an ARMA model, but there is a differencing term to detrend the non-stationary data.
+  + SARIMA models are the same as an ARIMA model, but there are seasonal terms to detrend and deseasonalize the non-stationary data.
+  + **In practice, use the auto.arima() function from the forecast package.**
+* Forecasting
+  + Defined as using the previous data points to make a well-informed predictions of the future.
+  + The **forecast()** function is best to predict your time series.
+  
+These is just a small chunk of what time series has to offer.  There are many other components and different techniques to detrend and deseasonalize your time series that we didn't talk about in this book. I hope this short tutorial assisted you in learning the basics of time series and equipped you with the tools to forecast.
+
+Now that you have learned the basics, make sure to check out our correspoding API package and Stock Shiny App to explore real world uses of time series You will be able to look at the series of real time stock prices for companies around the world!
+
+
+
+

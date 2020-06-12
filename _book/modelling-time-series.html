@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Modelling Time Series | Time Series for Beginners</title>
+  <meta name="description" content="This is a short guide to learning the basic concepts of time series while also implementing these procedures in R." />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Modelling Time Series | Time Series for Beginners" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a short guide to learning the basic concepts of time series while also implementing these procedures in R." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Modelling Time Series | Time Series for Beginners" />
+  
+  <meta name="twitter:description" content="This is a short guide to learning the basic concepts of time series while also implementing these procedures in R." />
+  
+
+<meta name="author" content="Jake Esprabens, Ari Arango, Joshua Kim" />
+
+
+<meta name="date" content="2020-06-12" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="introduction-to-time-series.html"/>
+<link rel="next" href="forecasting.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Short Guide to Time Series Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-to-time-series.html"><a href="introduction-to-time-series.html"><i class="fa fa-check"></i><b>1</b> Introduction to Time Series</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction-to-time-series.html"><a href="introduction-to-time-series.html#what-is-a-time-series"><i class="fa fa-check"></i><b>1.1</b> What is a Time Series?</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction-to-time-series.html"><a href="introduction-to-time-series.html#components-of-time-series"><i class="fa fa-check"></i><b>1.2</b> Components of Time Series</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction-to-time-series.html"><a href="introduction-to-time-series.html#stationarity"><i class="fa fa-check"></i><b>1.3</b> Stationarity</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="modelling-time-series.html"><a href="modelling-time-series.html"><i class="fa fa-check"></i><b>2</b> Modelling Time Series</a><ul>
+<li class="chapter" data-level="2.1" data-path="modelling-time-series.html"><a href="modelling-time-series.html#ar-and-ma"><i class="fa fa-check"></i><b>2.1</b> AR and MA</a></li>
+<li class="chapter" data-level="2.2" data-path="modelling-time-series.html"><a href="modelling-time-series.html#arma-arima-and-sarima"><i class="fa fa-check"></i><b>2.2</b> ARMA, ARIMA, AND SARIMA</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="forecasting.html"><a href="forecasting.html"><i class="fa fa-check"></i><b>3</b> Forecasting</a><ul>
+<li class="chapter" data-level="3.1" data-path="forecasting.html"><a href="forecasting.html#what-is-forecasting"><i class="fa fa-check"></i><b>3.1</b> What is Forecasting?</a></li>
+<li class="chapter" data-level="3.2" data-path="forecasting.html"><a href="forecasting.html#example-global-temperature"><i class="fa fa-check"></i><b>3.2</b> Example: Global Temperature</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i><b>4</b> Summary</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Time Series for Beginners</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="modelling-time-series" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Modelling Time Series</h1>
+<p>As mentioned before, a time series must be stationary for it to be used to predict well founded values. We will go over several models that we can create in order to allow forecasting.</p>
+<p>Please note that the first 3 models we cover, AR, MA, and ARMA, can be used on already stationary time series in order to allow them to predict better values. The remaining models are used on non-stationary time series.</p>
+<div id="ar-and-ma" class="section level2">
+<h2><span class="header-section-number">2.1</span> AR and MA</h2>
+<p>Two of the most common models in time series are the Autoregressive (AR) models and the Moving Average (MA) models.</p>
+<p><strong>Autoregressive Model: AR(p)</strong></p>
+<p>The autoregressive model uses observations from preivous time steps as input to a regression equations to predict the value at the next step. The AR model takes in one argument, p, which determines how many previous time steps will be inputted.</p>
+<p>The order, p, of the autoregressive model can be deterimined by looking at the <strong>partial autocorrelation function (PACF)</strong>. The PACF gives the partial correlation of a stationary time series with its own lagged values, regressed of the time series at all shorter lags.</p>
+<p>Let’s take a look at the PACF plot for the global temperature time series using the <em>pacf()</em> function in R.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">pacf.plot &lt;-<span class="st"> </span><span class="kw">pacf</span>(temp.ts)</a></code></pre></div>
+<p><img src="431-Time-Series_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>What should we look for in this plot? The primary goal is to look for the number of significant spikes outside of the blue confidence intervals. In this plot, I would determine there to be 2 spikes, one at 0.1 and the other at 0.3. The spike at the 0 does not count and any spikes outside of the blue later in the plot are likely due to random error. Therefore, this looks like an AR(2) model.</p>
+<p>Let’s look at an AR(2) model for the global temp time series. You can use the <em>ar()</em> function in R; however, I recommend using the <em>Arima()</em> function from the <strong>forecast</strong> package because we’ll be using it later on in this chapter.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="co"># the first index in the order argument represents the order of the AR(2) model</span></a>
+<a class="sourceLine" id="cb8-2" title="2">ar.model &lt;-<span class="st"> </span><span class="kw">Arima</span>(temp.ts, <span class="dt">order =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb8-3" title="3">ar.model</a></code></pre></div>
+<pre><code>## Series: temp.ts 
+## ARIMA(2,0,0) with non-zero mean 
+## 
+## Coefficients:
+##         ar1     ar2    mean
+##       0.588  0.3700  0.2697
+## s.e.  0.033  0.0332  0.0908
+## 
+## sigma^2 estimated as 0.01234:  log likelihood=617.65
+## AIC=-1227.3   AICc=-1227.25   BIC=-1208.6</code></pre>
+<p>So, this is our AR(2) model. How do we know it it’s a good model? We will compute other models first and then talk about how to compare them.</p>
+<p><strong>Moving Average Model: MA(q)</strong></p>
+<p>The moving average model is a time series model that accounts for very short-run autocorrelation. It basically states that the next observation is the mean of every past observation. The order of the moving average model, q, can usually be estimated by looking at the ACF plot of the time series. Let’s take a look at the ACF plot again.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">acf.plot &lt;-<span class="st"> </span><span class="kw">acf</span>(temp.ts, <span class="dt">lag.max =</span> <span class="dv">300</span>)</a></code></pre></div>
+<p><img src="431-Time-Series_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>As we have seen, this ACF plot takes a very long time to converge. What does this mean? This likely means that making a moving average model of this time series would not fix the problem of not having a stationary time series. Thus, the MA model will likely not be a good model to forecast with; however, for the sake of comparing models, we will still view one.</p>
+<p>Let’s looks at an MA(5) model. Usually, we would pick order, q, for how many signficiant spikes there are in the ACF plot; however, considering that there are hundreds in this example, we will just use 5. <strong>Careful:</strong> if you use too high of an order, it can result in too many predictors in the model which may cause overfitting.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="co"># the third index in the order argument represents the order of the MA(5) model.</span></a>
+<a class="sourceLine" id="cb11-2" title="2">ma.model &lt;-<span class="st"> </span><span class="kw">Arima</span>(temp.ts, <span class="dt">order =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">5</span>))</a>
+<a class="sourceLine" id="cb11-3" title="3">ma.model</a></code></pre></div>
+<pre><code>## Series: temp.ts 
+## ARIMA(0,0,5) with non-zero mean 
+## 
+## Coefficients:
+##          ma1     ma2     ma3     ma4     ma5    mean
+##       0.8056  0.8663  0.6675  0.5288  0.2949  0.2479
+## s.e.  0.0349  0.0420  0.0402  0.0340  0.0299  0.0197
+## 
+## sigma^2 estimated as 0.01799:  log likelihood=470.17
+## AIC=-926.35   AICc=-926.2   BIC=-893.61</code></pre>
+<p>We didn’t cover the actual formulas and notation of the models; however, if this interests you, view this webiste below for more details.
+<a href="https://maryclare.github.io/atsa/content/notes/notes_3.pdf"><strong>Formulas Behind AR and MA Models</strong></a></p>
+<p>The orders of the AR and the MA models or usually picked by the number of significant spikes in the PACF and ACF plots respectively; however there are other conditions as well that can be seen if you click <a href="https://people.duke.edu/~rnau/arimrule.htm"><strong>here</strong></a>.</p>
+</div>
+<div id="arma-arima-and-sarima" class="section level2">
+<h2><span class="header-section-number">2.2</span> ARMA, ARIMA, AND SARIMA</h2>
+<p>The autoregressive moving average model (ARMA), autoregressive integrated moving average model (ARIMA) and the seasonal autoregressive integrated moving average model (SARIMA) are also commonly used models in time series analysis. Evidently, they all come from the same family. Thus, we will explain the small differences between them.</p>
+<p><strong>Autoregressive Moving Average Model: ARMA(p,q)</strong></p>
+<p>Autoregressive moving average models are simply a combination of an AR model and an MA model. Let’s take a look at what our ARMA model would be.</p>
+<p>We are going to build an ARMA(2,5) model by simply using the two orders from the previous models.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">arma.model &lt;-<span class="st"> </span><span class="kw">Arima</span>(temp.ts, <span class="dt">order =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">5</span>))</a>
+<a class="sourceLine" id="cb13-2" title="2">arma.model</a></code></pre></div>
+<pre><code>## Series: temp.ts 
+## ARIMA(2,0,5) with non-zero mean 
+## 
+## Coefficients:
+##          ar1      ar2      ma1     ma2      ma3     ma4      ma5    mean
+##       1.8305  -0.8306  -1.3337  0.4087  -0.1512  0.1674  -0.0684  0.4220
+## s.e.  0.0635   0.0634   0.0720  0.0663   0.0602  0.0591   0.0381  0.4206
+## 
+## sigma^2 estimated as 0.01158:  log likelihood=644.73
+## AIC=-1271.45   AICc=-1271.22   BIC=-1229.37</code></pre>
+<p><strong>Autoregressive Integrated Moving Average Model: ARIMA(p,d,q)</strong></p>
+<p>This model is the same as the previous, except now it has this weird d argument. What does this d stand for? d represents the number of nonseasonal differences needed for stationarity. Simply, d just makes nonstationary data stationary by removing trends!</p>
+<p>How do you pick your differencing term?</p>
+<p>Usually, small terms are picked for the differencing term. If you pick too high, you will likely cause your model to incorrectly represent your data. Some general rules for picking your differencing term are that differencing should not increase your variance and the autocorrelation of the model should be less than -0.5.</p>
+<p>Thus, I tried a few differencing terms and concluded that <span class="math inline">\(d=1\)</span> would be best for the model as it had the lowest variance and the autocorrelation was less than -0.5.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">arima.model &lt;-<span class="st"> </span><span class="kw">Arima</span>(temp.ts, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>))</a>
+<a class="sourceLine" id="cb15-2" title="2">arima.model</a></code></pre></div>
+<pre><code>## Series: temp.ts 
+## ARIMA(2,1,5) 
+## 
+## Coefficients:
+##          ar1     ar2      ma1      ma2     ma3     ma4     ma5
+##       0.1022  0.6468  -0.6046  -0.6056  0.1762  0.0520  0.0157
+## s.e.  0.2056  0.1859   0.2096   0.2859  0.1040  0.0581  0.0517
+## 
+## sigma^2 estimated as 0.01156:  log likelihood=645.66
+## AIC=-1275.33   AICc=-1275.14   BIC=-1237.93</code></pre>
+<p><strong>Seasonal Autoregressive Integrated Moving Average Model: SARIMA(p,d,q)(P,D,Q)s</strong></p>
+<p>The SARIMA model is an extension of the ARIMA model. The only difference now is that this model added on a seasonal component. As we saw, ARIMA is good for making a non-stationary time series stationary by adjusting the trend. However, the SARIMA model can adjust a non-stationary time series by removing trend and seasonality.</p>
+<p>As we know:</p>
+<ul>
+<li>p - the order of the autoregressive trend</li>
+<li>d - the order of the trend differencing</li>
+<li>q - the order of the moving average trend</li>
+</ul>
+<p>What do (P,D,Q)s mean?</p>
+<ul>
+<li>P - the order of the autoregressive seasonality</li>
+<li>D - the order of the seasonal differncing</li>
+<li>Q - the order of the moving average seasonality</li>
+<li>s - the number of periods in your season</li>
+</ul>
+<p>How do you pick these new terms?</p>
+<p>There are several ways to pick these orders; however, when trying to use the SARIMA model in practice, it is likely best to let R or other software estimate the parameters for you. This article attached <a href="https://medium.com/@rrfd/sarima-modelling-for-car-sharing-basic-data-pipelines-applications-with-python-pt-1-75de4677c0cd#:~:text=SARIMA%20models%20are%20a%20general,a%20constant%20mean%20and%20variance."><strong>here</strong></a> mentions this in more detail.</p>
+<p>In our example, we may not have a SARIMA model because our time series did not have seasonality. Therefore, it may follow a SARIMA(2,1,5)(0,0,0)12.</p>
+<p>The s term would be 12 because there would be 12 periods (months) in the season if we had seasonality. We will still follow through with an example. We can use the sarima function from the <strong>astsa</strong> package in R.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">sarima.model &lt;-<span class="st"> </span><span class="kw">sarima</span>(temp.ts, <span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">12</span>)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## stats::arima(x = xdata, order = c(p, d, q), seasonal = list(order = c(P, D, 
+##     Q), period = S), xreg = constant, transform.pars = trans, fixed = fixed, 
+##     optim.control = list(trace = trc, REPORT = 1, reltol = tol))
+## 
+## Coefficients:
+##          ar1     ar2      ma1      ma2     ma3     ma4    ma5  constant
+##       0.1286  0.6396  -0.6452  -0.5892  0.1750  0.0575  0.014    0.0012
+## s.e.  0.2465  0.2227   0.2505   0.3498  0.1224  0.0628  0.055    0.0002
+## 
+## sigma^2 estimated as 0.0113:  log likelihood = 650.7,  aic = -1283.4</code></pre>
+<p>Now that we have 5 different models, which one do you choose?</p>
+<p>Often, this can be done simply by looking at the Akaike Information Criterion (AIC) or Bayesian Information Criterion (BIC). In our example, we will be looking at the AIC. Generally, a smaller AIC means the model fits the time series better.</p>
+<p>If you check the output for each model, you will see they all have an AIC value. I will reprint them below as well.</p>
+<pre><code>##                    Model      AIC
+## 1                  AR(2) -1227.30
+## 2                  MA(5)  -926.35
+## 3              ARMA(2,5) -1271.45
+## 4           ARIMA(2,1,5) -1275.33
+## 5 SARIMA(2,1,5)(0,0,0)12 -1283.40</code></pre>
+<p>As we can see, the SARIMA model actually had the lowest AIC, thus we would conclude that the SARIMA made the time series stationary and is most sutiable for forecasting. However, as I mentioned before; when it comes to finding the best model, R or other software is likely the best. Thus, we will use the <em>auto.arima()</em> function from the <strong>forecast</strong> package that will automatically select orders for us! In practice, I definitely recommend using this rather than going through each model and testing different orders.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">best.model &lt;-<span class="st"> </span><span class="kw">auto.arima</span>(temp.ts)</a>
+<a class="sourceLine" id="cb20-2" title="2">best.model</a></code></pre></div>
+<pre><code>## Series: temp.ts 
+## ARIMA(2,1,3)(1,0,0)[12] with drift 
+## 
+## Coefficients:
+##           ar1     ar2      ma1      ma2     ma3     sar1   drift
+##       -0.0069  0.6955  -0.5143  -0.6984  0.2307  -0.0304  0.0012
+## s.e.   0.1027  0.0954   0.1128   0.1549  0.0759   0.0371  0.0002
+## 
+## sigma^2 estimated as 0.01142:  log likelihood=650.08
+## AIC=-1284.15   AICc=-1283.97   BIC=-1246.76</code></pre>
+<p>As we can see, this model that was selected for us, SARIMA(2,1,3)(1,0,0)12, has the lowest AIC at -1284.15. We will continue to use this model in the next chapter as we dive into forecasting.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction-to-time-series.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="forecasting.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["431-Time-Series.pdf", "431-Time-Series.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

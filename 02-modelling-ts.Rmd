@@ -1,0 +1,168 @@
+# Modelling Time Series
+
+```{r, include = FALSE}
+library(tidyverse)
+library(forecast)
+
+temp <-read.csv("monthly_csv.csv", header = T) %>%
+  mutate(Date = as.Date(Date)) %>%
+  filter(Source == "GISTEMP") %>%
+  filter(Date >= "1950-01-01") %>%
+  arrange(Date) %>%
+  select(Mean)
+temp.ts <- ts(temp, start = 1950, end = 2016, frequency = 12)
+```
+
+As mentioned before, a time series must be stationary for it to be used to predict well founded values. We will go over several models that we can create in order to allow forecasting.
+
+Please note that the first 3 models we cover, AR, MA, and ARMA, can be used on already stationary time series in order to allow them to predict better values.  The remaining models are used on non-stationary time series.
+
+## AR and MA
+
+Two of the most common models in time series are the Autoregressive (AR) models and the Moving Average (MA) models.
+
+**Autoregressive Model:  AR(p)**
+
+The autoregressive model uses observations from preivous time steps as input to a regression equations to predict the value at the next step.  The AR model takes in one argument, p, which determines how many previous time steps will be inputted.
+
+The order, p, of the autoregressive model can be deterimined by looking at the **partial autocorrelation function (PACF)**.  The PACF gives the partial correlation of a stationary time series with its own lagged values, regressed of the time series at all shorter lags.
+
+Let's take a look at the PACF plot for the global temperature time series using the _pacf()_ function in R.
+
+```{r, warning = FALSE, fig.show='hide', echo = TRUE}
+pacf.plot <- pacf(temp.ts)
+```
+
+```{r, echo = FALSE}
+plot(pacf.plot, main = "PACF Plot of Global Temperature Time Series")
+```
+
+What should we look for in this plot? The primary goal is to look for the number of significant spikes outside of the blue confidence intervals. In this plot, I would determine there to be 2 spikes, one at 0.1 and the other at 0.3.  The spike at the 0 does not count and any spikes outside of the blue later in the plot are likely due to random error. Therefore, this looks like an AR(2) model.
+
+Let's look at an AR(2) model for the global temp time series. You can use the _ar()_ function in R; however, I recommend using the _Arima()_ function from the **forecast** package because we'll be using it later on in this chapter.
+
+```{r}
+# the first index in the order argument represents the order of the AR(2) model
+ar.model <- Arima(temp.ts, order = c(2,0,0))
+ar.model
+```
+
+So, this is our AR(2) model. How do we know it it's a good model?  We will compute other models first and then talk about how to compare them.
+
+**Moving Average Model: MA(q)**
+
+The moving average model is a time series model that accounts for very short-run autocorrelation. It basically states that the next observation is the mean of every past observation. The order of the moving average model, q, can usually be estimated by looking at the ACF plot of the time series.  Let's take a look at the ACF plot again.
+
+```{r, warning = FALSE, fig.show='hide', echo = TRUE}
+acf.plot <- acf(temp.ts, lag.max = 300)
+```
+
+```{r, echo = FALSE}
+plot(acf.plot, main = "ACF Plot of Global Temperature Time Series")
+```
+
+As we have seen, this ACF plot takes a very long time to converge. What does this mean? This likely means that making a moving average model of this time series would not fix the problem of not having a stationary time series.  Thus, the MA model will likely not be a good model to forecast with; however, for the sake of comparing models, we will still view one.
+
+Let's looks at an MA(5) model.  Usually, we would pick order, q, for how many signficiant spikes there are in the ACF plot; however, considering that there are hundreds in this example, we will just use 5. **Careful:** if you use too high of an order, it can result in too many predictors in the model which may cause overfitting.
+
+```{r}
+# the third index in the order argument represents the order of the MA(5) model.
+ma.model <- Arima(temp.ts, order = c(0,0,5))
+ma.model
+```
+
+We didn't cover the actual formulas and notation of the models; however, if this interests you, view this webiste below for more details.
+[**Formulas Behind AR and MA Models**](https://maryclare.github.io/atsa/content/notes/notes_3.pdf)
+
+The orders of the AR and the MA models or usually picked by the number of significant spikes in the PACF and ACF plots respectively; however there are other conditions as well that can be seen if you click [**here**](https://people.duke.edu/~rnau/arimrule.htm).
+
+## ARMA, ARIMA, AND SARIMA
+
+The autoregressive moving average model (ARMA), autoregressive integrated moving average model (ARIMA) and the seasonal autoregressive integrated moving average model (SARIMA) are also commonly used models in time series analysis.  Evidently, they all come from the same family.  Thus, we will explain the small differences between them.
+
+**Autoregressive Moving Average Model: ARMA(p,q)**
+
+Autoregressive moving average models are simply a combination of an AR model and an MA model. Let's take a look at what our ARMA model would be.
+
+We are going to build an ARMA(2,5) model by simply using the two orders from the previous models.
+
+```{r}
+arma.model <- Arima(temp.ts, order = c(2,0,5))
+arma.model
+```
+
+**Autoregressive Integrated Moving Average Model: ARIMA(p,d,q)**
+
+This model is the same as the previous, except now it has this weird d argument.  What does this d stand for?  d represents the number of nonseasonal differences needed for stationarity.  Simply, d just makes nonstationary data stationary by removing trends!
+
+How do you pick your differencing term?
+
+Usually, small terms are picked for the differencing term.  If you pick too high, you will likely cause your model to incorrectly represent your data. Some general rules for picking your differencing term are that differencing should not increase your variance and the autocorrelation of the model should be less than -0.5.
+
+Thus, I tried a few differencing terms and concluded that $d=1$ would be best for the model as it had the lowest variance and the autocorrelation was less than -0.5.
+
+```{r}
+arima.model <- Arima(temp.ts, c(2, 1, 5))
+arima.model
+```
+
+**Seasonal Autoregressive Integrated Moving Average Model: SARIMA(p,d,q)(P,D,Q)s**
+
+The SARIMA model is an extension of the ARIMA model.  The only difference now is that this model added on a seasonal component. As we saw, ARIMA is good for making a non-stationary time series stationary by adjusting the trend.  However, the SARIMA model can adjust a non-stationary time series by removing trend and seasonality.
+
+As we know:
+
+* p - the order of the autoregressive trend
+* d - the order of the trend differencing
+* q - the order of the moving average trend
+
+What do (P,D,Q)s mean?
+
+* P - the order of the autoregressive seasonality
+* D - the order of the seasonal differncing
+* Q - the order of the moving average seasonality
+* s - the number of periods in your season
+
+How do you pick these new terms?
+
+There are several ways to pick these orders; however, when trying to use the SARIMA model in practice, it is likely best to let R or other software  estimate the parameters for you.  This article attached [**here**](https://medium.com/@rrfd/sarima-modelling-for-car-sharing-basic-data-pipelines-applications-with-python-pt-1-75de4677c0cd#:~:text=SARIMA%20models%20are%20a%20general,a%20constant%20mean%20and%20variance.) mentions this in more detail.
+
+In our example, we may not have a SARIMA model because our time series did not have seasonality. Therefore, it may follow a SARIMA(2,1,5)(0,0,0)12.
+
+The s term would be 12 because there would be 12 periods (months) in the season if we had seasonality. We will still follow through with an example.  We can use the sarima function from the **astsa** package in R.
+
+```{r, include = FALSE}
+library(astsa)
+```
+
+
+```{r, results='hide', fig.show='hide', echo = TRUE}
+sarima.model <- sarima(temp.ts, 2,1,5,0,0,0,12)
+```
+
+```{r, echo = FALSE}
+sarima.model$fit
+```
+
+
+Now that we have 5 different models, which one do you choose? 
+
+Often, this can be done simply by looking at the Akaike Information Criterion (AIC) or Bayesian Information Criterion (BIC).  In our example, we will be looking at the AIC.  Generally, a smaller AIC means the model fits the time series better.
+
+If you check the output for each model, you will see they all have an AIC value. I will reprint them below as well.
+
+```{r,echo = FALSE}
+aics <- data.frame(Model = c("AR(2)", "MA(5)", "ARMA(2,5)", "ARIMA(2,1,5)", "SARIMA(2,1,5)(0,0,0)12"), AIC = c(-1227.3, -926.35, -1271.45, -1275.33, -1283.40))
+aics
+```
+
+As we can see, the SARIMA model actually had the lowest AIC, thus we would conclude that the SARIMA made the time series stationary and is most sutiable for forecasting.  However, as I mentioned before; when it comes to finding the best model, R or other software is likely the best. Thus, we will use the _auto.arima()_ function from the **forecast** package that will automatically select orders for us!  In practice, I definitely recommend using this rather than going through each model and testing different orders.
+
+
+```{r}
+best.model <- auto.arima(temp.ts)
+best.model
+```
+
+As we can see, this model that was selected for us, SARIMA(2,1,3)(1,0,0)12, has the lowest AIC at -1284.15.  We will continue to use this model in the next chapter as we dive into forecasting.
+

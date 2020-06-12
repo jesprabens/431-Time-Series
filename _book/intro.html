@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Introduction to Time Series | Time Series for Beginners</title>
+  <meta name="description" content="This is a short guide to learning the basic concepts of time series while also implementing these procedures in R." />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Introduction to Time Series | Time Series for Beginners" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a short guide to learning the basic concepts of time series while also implementing these procedures in R." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Introduction to Time Series | Time Series for Beginners" />
+  
+  <meta name="twitter:description" content="This is a short guide to learning the basic concepts of time series while also implementing these procedures in R." />
+  
+
+<meta name="author" content="Ari Arango, Jake Esprabens, Joshua Kim" />
+
+
+<meta name="date" content="2020-06-11" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="modelling-time-series.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction to Time Series</a><ul>
+<li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#what-is-a-time-series"><i class="fa fa-check"></i><b>2.1</b> What is a Time Series?</a></li>
+<li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#components-of-time-series"><i class="fa fa-check"></i><b>2.2</b> Components of Time Series</a></li>
+<li class="chapter" data-level="2.3" data-path="intro.html"><a href="intro.html#stationarity"><i class="fa fa-check"></i><b>2.3</b> Stationarity</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="modelling-time-series.html"><a href="modelling-time-series.html"><i class="fa fa-check"></i><b>3</b> Modelling Time Series</a><ul>
+<li class="chapter" data-level="3.1" data-path="modelling-time-series.html"><a href="modelling-time-series.html#acf-and-pacf"><i class="fa fa-check"></i><b>3.1</b> ACF and PACF</a></li>
+<li class="chapter" data-level="3.2" data-path="modelling-time-series.html"><a href="modelling-time-series.html#arima-and-sarima"><i class="fa fa-check"></i><b>3.2</b> ARIMA AND SARIMA</a></li>
+<li class="chapter" data-level="3.3" data-path="modelling-time-series.html"><a href="modelling-time-series.html#exponential-smoothing"><i class="fa fa-check"></i><b>3.3</b> Exponential Smoothing</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>4</b> Methods</a></li>
+<li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a><ul>
+<li class="chapter" data-level="5.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>5.1</b> Example one</a></li>
+<li class="chapter" data-level="5.2" data-path="applications.html"><a href="applications.html#example-two"><i class="fa fa-check"></i><b>5.2</b> Example two</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>6</b> Final Words</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Time Series for Beginners</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="intro" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Introduction to Time Series</h1>
+<div id="what-is-a-time-series" class="section level2">
+<h2><span class="header-section-number">2.1</span> What is a Time Series?</h2>
+<p>A time series is a series of data points over time. Sounds pretty simple, right?</p>
+<p>Let’s take a look at an example of time series using real world data. This data set looks at the average global temperature anomalies in celsius per month from January 1950 to December 2016.</p>
+<p>Let’s see what what this data looks like.</p>
+<pre><code>##    Mean
+## 1 -0.30
+## 2 -0.26
+## 3 -0.06
+## 4 -0.21
+## 5 -0.12</code></pre>
+<p><strong><em>We must convert the data into a time series object.</em></strong> Now we know that this data is monthly and that it started in January 1950 and ended in December 2016. So we must convert it to a time series object, using the ts() function in R. It takes in these arguments.</p>
+<ul>
+<li>start = the starting time of the time series</li>
+<li>end = the ending time of the time series</li>
+<li>freqeuncy = the number of observations per unit of time.
+<ul>
+<li>For monthly data, frequency will be 12</li>
+<li>For quarterly data, frequency will be 4</li>
+<li>For biannual data, frequency will be 2</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">temp.ts &lt;-<span class="st"> </span><span class="kw">ts</span>(temp, <span class="dt">start =</span> <span class="dv">1950</span>, <span class="dt">end =</span> <span class="dv">2016</span>, <span class="dt">frequency =</span> <span class="dv">12</span>)</a></code></pre></div>
+<pre><code>##        Jan   Feb   Mar   Apr   May   Jun   Jul   Aug   Sep   Oct   Nov   Dec
+## 1950 -0.30 -0.26 -0.06 -0.21 -0.12 -0.06 -0.09 -0.18 -0.10 -0.20 -0.35 -0.20
+## 1951 -0.35 -0.44 -0.19 -0.10 -0.02 -0.05  0.00  0.05  0.07  0.06  0.00  0.15
+## 1952  0.16  0.12 -0.10  0.02 -0.05 -0.04  0.05  0.07  0.08 -0.04 -0.17 -0.02</code></pre>
+<p>As we can see, the data is now a time series object with filled with 1644 observations where each observation represents a month from 1950 to 2016.</p>
+<p>How would this object look plotted?</p>
+<p>There are several ways to plot time series in R, including the base R function plot(); however, we will be using the autoplot() function which is bulit into <strong>ggplot2</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">autoplot</span>(temp.ts, <span class="dt">ts.colour =</span> <span class="st">&quot;dodgerblue4&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Average Global Temperature Anomalies Per Month 1950-2016&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Average Temperature Difference (Celsius)&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="st">  </span><span class="kw">theme_classic</span>()</a></code></pre></div>
+<pre><code>## Warning: Ignoring unknown parameters: ts.colour</code></pre>
+<p><img src="431-Time-Series_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>What can we take away from this plot?</p>
+<p>Well, the first thing you might notice is that the average global temperatue has risen rapidly since about 1970! It also gradually increased from 1950 to 1970. It also staggers a lot all the way through. One might conclude that temperature has increased in the past 66 years! How can you define the changed happening in this time series though? What does the rapid staggering mean? What do you call the upward movement?</p>
+</div>
+<div id="components-of-time-series" class="section level2">
+<h2><span class="header-section-number">2.2</span> Components of Time Series</h2>
+<p>What makes up time series?</p>
+<p>Without going unto too much notation, a simple additive decomposed model will look like this:</p>
+<p><span class="math display">\[x_{t} = m_{t} + s_{t} + e_{t}\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(m_t\)</span> is the trend</li>
+<li><span class="math inline">\(s_t\)</span> is the seasonality</li>
+<li><span class="math inline">\(e_t\)</span> is the error or random white noise</li>
+</ul>
+<p>To put it simply, the components of a time series model are defined as:</p>
+<ul>
+<li>trend - the increasing or decreasing values in a series</li>
+<li>seasonality - the repeating short-term cycles in the series</li>
+<li>random white noise - random variation in the series</li>
+</ul>
+<p>To visualize these in R, you can easily use the base R function, decompose(), to produce plots for all three of these components. However, I chose to create my own plots using ggplot2.</p>
+<p><strong>Trend</strong></p>
+<p>What does the trend plot look like for this global temperature time series?</p>
+<p><img src="431-Time-Series_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>As we can see, there is strong upward trend. This means that the temperature is gradually going up since 1950! What if the trend line was going down? Then you would conclude that the temperature is decreasing. What if it stayed constant? Then, you can conclude that there is no trend!</p>
+<p><strong>Seasonality</strong></p>
+<p>What does the seasonality plot look like for this global temperature time series?</p>
+<p><img src="431-Time-Series_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>In a seasonality plot, you are looking for a common short-term pattern. Seasonality can be caused by many thing depending in the dataset. It is hard to tell if there is seasonality in this time series because of the rapid staggering. Usually seasonality will be more obvious. An example of seasonality is airline flyers. Many people are often flying in the summer and in the winter for vacation. Thus, that specific time series will see high spikes every 6 months.</p>
+<p><strong>Random White Noise</strong></p>
+<p>What does the random white noise plot look like for this global temperature time series?</p>
+<p><img src="431-Time-Series_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Looks pretty random right? That’s because it is! This plot illustrates the variation in the time series. This is the unexplained variation that solely happens by chance.</p>
+</div>
+<div id="stationarity" class="section level2">
+<h2><span class="header-section-number">2.3</span> Stationarity</h2>
+<p>Stationarity is one of the most important characteristics of a time series. What does it mean for a time series to be stationarity? It is defined by having a constant mean and variance across the time series. A time series needs to be stationary in order for it to make good prediction. We can check if a time series is stationary by looking at the autocorrelation function (ACF). What exactly is autocorrelation? Autocorrelation basically measures the similarity between observations as a function of the time lag between them.</p>
+<p>Let’s take a look at the ACF plot of the global temperature time series, using the acf function in R.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">acf</span>(temp.ts, <span class="dt">lag.max =</span> <span class="dv">100</span>)</a></code></pre></div>
+<p><img src="431-Time-Series_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>What does this mean?</p>
+<p>If the series was stationary, we would see basically very line within the blue confidence intervals. However, we see that every spike is out of these lines. This slow decay represents means that there is a trend in the time series, but there is no seasonality!</p>
+<p>Here are some common ACF plots you may see:</p>
+<ul>
+<li>Trend and seasonality - Takes a long time decay but also looks similar to a sin graph.</li>
+<li>Trend, but no seasonality - Decays very slowly and the spikes are out of the blue confdience intervals.</li>
+<li>Seasonality, but no trend - Decays quickly and looks similar to a sin graph</li>
+<li>Stationarity - all lines within the blue confidence intervals, besides the first spike.</li>
+</ul>
+<p>If a time series has trend or seasonality, then it is not stationary. This means that it won’t be good for forecasting. What can we do to fix this? We can create new models to represent the time series and make it stationary. We will go over this in the next chapter.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="modelling-time-series.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["431-Time-Series.pdf", "431-Time-Series.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

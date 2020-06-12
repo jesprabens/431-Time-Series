@@ -1,0 +1,15 @@
+`r if (knitr::is_html_output()) '
+# References {-}
+'`
+
+[Duke University, _Summary of Rules for Identifying ARIMA Models_](https://people.duke.edu/~rnau/arimrule.htm)
+
+[_Global Temperature Time Series Data_](https://datahub.io/core/global-temp)
+
+[Holmes, Scheuerell, & Ward, _Applied Time Series Analysis_](https://nwfsc-timeseries.github.io/atsa-labs/)
+
+[Hyndman & Athanasopoulos, _Forecasting Principles and Practice_](https://otexts.com/fpp2/)
+
+[Khan, _ARIMA Model for Forescating - Example in R_](https://rpubs.com/riazakhan94/arima_with_example)
+
+[Towards Data Science, _The Complete Guide to Time Sereis Analysis and Forecasting_](https://towardsdatascience.com/the-complete-guide-to-time-series-analysis-and-forecasting-70d476bfe775)
