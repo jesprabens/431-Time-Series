@@ -1,1 +1,5 @@
-This is a minimal example of a book based on R Markdown and **bookdown** (https://github.com/rstudio/bookdown). Please see the page "Get Started" at https://bookdown.org/home/about/ for how to compile this example.
+This is a bookdown called Time Series for Beginners.  It's goal is to provide a short lesson on time series analysis and forecasting in R.
+
+You can view the book at the link below.
+
+[Time Series for Beginners](https://bookdown.org/JakeEsprabens/431-Time-Series/)
